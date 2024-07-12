@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Alzheimer</title>
+</head>
+<body>
+    <h1>Predicción de Alzheimer</h1>
+    <form id="prediction-form">
+        <label for="age">Age:</label><br>
+        <input type="number" id="age" name="age"><br>
+        <label for="gender">Gender:</label><br>
+        <input type="number" id="gender" name="gender"><br>
+        <label for="education">Education Level:</label><br>
+        <input type="number" id="education" name="education"><br>
+        <label for="bmi">BMI:</label><br>
+        <input type="number" id="bmi" name="bmi"><br>
+        <label for="family">Family History of Alzheimer's:</label><br>
+        <input type="number" id="family" name="family"><br>
+        <label for="cardio">Cardiovascular Disease:</label><br>
+        <input type="number" id="cardio" name="cardio"><br>
+        <label for="cholesterol">Cholesterol Total:</label><br>
+        <input type="number" id="cholesterol" name="cholesterol"><br>
+        <label for="ldl">Cholesterol LDL:</label><br>
+        <input type="number" id="ldl" name="ldl"><br>
+        <label for="mmse">MMSE:</label><br>
+        <input type="number" id="mmse" name="mmse"><br><br>
+        <input type="submit" value="Predict">
+    </form> 
+    <div id="result"></div>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                Age: parseInt(formData.get('age')),
+                Gender: parseInt(formData.get('gender')),
+                EducationLevel: parseInt(formData.get('education')),
+                BMI: parseFloat(formData.get('bmi')),
+                FamilyHistoryAlzheimers: parseInt(formData.get('family')),
+                CardiovascularDisease: parseInt(formData.get('cardio')),
+                CholesterolTotal: parseInt(formData.get('cholesterol')),
+                CholesterolLDL: parseInt(formData.get('ldl')),
+                MMSE: parseInt(formData.get('mmse'))
+            };
+            const response = await fetch('https://huggingface.co/andres-18/arbol-de-decision', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = 'Predicción: ' + result.prediction;
+        });
+    </script>
+</body>
+</html>
